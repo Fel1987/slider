@@ -4,7 +4,7 @@ import { FaQuoteRight } from "react-icons/fa";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 export default function Carousel() {
-  const [people, setPeople] = useState(shortList);
+  const [people, setPeople] = useState(list);
 
   function prevSlide() {}
 
@@ -12,11 +12,15 @@ export default function Carousel() {
 
   return (
     <section className="slider-container">
-      {people.map((person) => {
+      {people.map((person, personIndex) => {
         const { id, image, name, title, quote } = person;
 
         return (
-          <article className="slide" key={id}>
+          <article
+            style={{ transform: `translateX(${personIndex * 100}%)` }}
+            className="slide"
+            key={id}
+          >
             <img src={image} alt={name} className="person-img" />
             <h5 className="name">{name}</h5>
             <p className="title">{title}</p>
