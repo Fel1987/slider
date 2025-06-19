@@ -1,23 +1,53 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { shortList, list, longList } from "./data";
 import { FaQuoteRight } from "react-icons/fa";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 export default function Carousel() {
-  const [people, setPeople] = useState(list);
+  const [people, setPeople] = useState(longList);
+  const [currentPerson, setCurrentPerson] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
-  function prevSlide() {}
+  function prevSlide() {
+    setCurrentPerson((currPerson) => {
+      const result = (currPerson - 1 + people.length) % people.length;
+      return result;
+    });
+  }
 
-  function nextSlide() {}
+  function nextSlide() {
+    setCurrentPerson((currPerson) => {
+      const result = (currPerson + 1) % people.length;
+      return result;
+    });
+  }
+
+  useEffect(() => {
+    if (isPaused) return;
+
+    const personInterval = setInterval(() => {
+      nextSlide();
+    }, 3000);
+
+    return () => clearInterval(personInterval);
+  }, [currentPerson, isPaused]);
 
   return (
-    <section className="slider-container">
+    <section
+      className="slider-container"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       {people.map((person, personIndex) => {
         const { id, image, name, title, quote } = person;
 
         return (
           <article
-            style={{ transform: `translateX(${personIndex * 100}%)` }}
+            style={{
+              transform: `translateX(${(personIndex - currentPerson) * 100}%)`,
+              opacity: personIndex === currentPerson ? 1 : 0,
+              visibility: personIndex === currentPerson ? "visible" : "hidden",
+            }}
             className="slide"
             key={id}
           >
